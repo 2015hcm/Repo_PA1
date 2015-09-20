@@ -106,15 +106,39 @@ There are a total of 2304 rows of missing steps. This can also be shown by doing
 
 2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
 
-still working on...
+```{r}
+average_by_interval<-rep(average_alldays,61) #add another column containing average for that interval
+ped_data_ai<-data.frame(ped_data,average_by_interval)
+for (i in 1:length(ped_data$steps))
+  { if (is.na(ped_data$steps[i]))
+    { ped_data_ai$steps[i]<-ped_data_ai$average_by_interval[i]} #insert average into the NA cell
+  }
+```
+
 
 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
-still working on...
+New data set is created in the code above (for bullet 2).
 
 4. Make a histogram of the total number of steps taken each day and Calculate and report the **mean** and **median** total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-still working on...
+```{r}
+
+day_total_ai<-vector()
+for (i in 1:ndays) 
+  {
+  temp<-subset(ped_data_ai,date==dates[i])
+  day_total_ai[i]<-sum(temp$steps,na.rm=T) #na.rm=T replaces all NA with 0
+}
+par(mfrow=c(1,1))
+hist(day_total_ai,breaks=25,xlim=c(0,25000),xlab="daily total (step)")
+
+
+day_mean_ai<-mean(day_total_ai)
+day_median_ai<-median(day_total_ai)
+message("The mean and median total number of steps taken per day after replacing missing steps with average of all days for that interval are ", round(day_mean_ai,0)," and ",round(day_median_ai,0), ", respectively.")
+```
+
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
